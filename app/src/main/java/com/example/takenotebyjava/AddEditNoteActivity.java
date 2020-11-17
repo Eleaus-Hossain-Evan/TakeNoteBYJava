@@ -16,8 +16,10 @@ import android.widget.Toast;
 import com.example.takenotebyjava.databinding.ActivityAddNoteBinding;
 import com.example.takenotebyjava.databinding.ActivityMainBinding;
 
-public class AddNoteActivity extends AppCompatActivity {
+public class AddEditNoteActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ID
+            = "com.example.takenotebyjava.EXTRA_ID";
     public static final String EXTRA_TITLE
             = "com.example.takenotebyjava.EXTRA_TITLE";
     public static final String EXTRA_DESCRIPTION
@@ -41,7 +43,16 @@ public class AddNoteActivity extends AppCompatActivity {
         numberPicker.setMaxValue(10);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_baseline_close_24);
-        setTitle("Add Note");
+
+        Intent intent = getIntent();
+        if(intent.hasExtra(EXTRA_ID)){
+            setTitle("Edit Note");
+            etTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            etDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION));
+            numberPicker.setValue(intent.getIntExtra(EXTRA_PRIORITY,1));
+        }else{
+            setTitle("Add Note");
+        }
     }
 
     private void saveNote() {
@@ -58,6 +69,11 @@ public class AddNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DESCRIPTION, description);
         data.putExtra(EXTRA_PRIORITY, priority);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if(id != -1){
+            data.putExtra(EXTRA_ID,id);
+        }
         setResult(RESULT_OK, data);
         finish();
 
